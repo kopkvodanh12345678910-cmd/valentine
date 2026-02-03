@@ -20,16 +20,25 @@
   .container {
     text-align: center;
     color: white;
+    position: relative;
+    z-index: 2;
   }
 
   h1 {
-    font-size: 2.5rem;
-    margin-bottom: 40px;
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  .note {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
   }
 
   .buttons {
     position: relative;
-    width: 300px;
+    width: 320px;
     height: 120px;
     margin: auto;
   }
@@ -39,80 +48,4 @@
     font-size: 1.2rem;
     border: none;
     border-radius: 30px;
-    cursor: pointer;
-    position: absolute;
-    transition: 0.2s;
-  }
-
-  #yes {
-    background: #ff4d6d;
-    color: white;
-    left: 30px;
-  }
-
-  #no {
-    background: white;
-    color: #ff4d6d;
-    right: 30px;
-  }
-
-  /* Trang thứ 2 */
-  .success {
-    text-align: center;
-    color: white;
-    font-size: 3rem;
-    animation: pop 0.8s ease;
-  }
-
-  @keyframes pop {
-    from {
-      transform: scale(0.5);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-</style>
-</head>
-
-<body>
-
-<div class="container" id="page1">
-  <h1>Hey Na 💖<br>You will be my Valentine?</h1>
-
-  <div class="buttons">
-    <button id="yes">YES 💘</button>
-    <button id="no">NO 🙈</button>
-  </div>
-</div>
-
-<script>
-  const noBtn = document.getElementById("no");
-  const yesBtn = document.getElementById("yes");
-
-  // NO chạy trốn – đụng là nhảy
-  function moveNo() {
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 60);
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-  }
-
-  noBtn.addEventListener("mouseover", moveNo);
-  noBtn.addEventListener("touchstart", moveNo); // cho điện thoại
-
-  // YES → trang tiếp theo
-  yesBtn.addEventListener("click", () => {
-    document.body.innerHTML = `
-      <div class="success">
-        💕 Yay 🥰 <br>
-        I knew it 💖
-      </div>
-    `;
-  });
-</script>
-
-</body>
-</html>
+    cursor: pointe
