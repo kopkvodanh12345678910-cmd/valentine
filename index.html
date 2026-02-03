@@ -9,33 +9,49 @@
   body {
     margin: 0;
     height: 100vh;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fbc2eb);
+    background-size: 600% 600%;
+    animation: bgMove 12s ease infinite;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial, sans-serif;
+    font-family: "Comic Sans MS", Arial, sans-serif;
     overflow: hidden;
+  }
+
+  @keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   .container {
     text-align: center;
     color: white;
+    position: relative;
+    z-index: 2;
   }
 
   h1 {
     font-size: 4.5rem;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    animation: heartbeat 1.5s infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
   }
 
   .note {
     font-size: 1.8rem;
-    margin-bottom: 40px;
+    margin-bottom: 35px;
   }
 
   .buttons {
     position: relative;
     width: 420px;
-    height: 160px;
+    height: 180px;
     margin: auto;
   }
 
@@ -46,29 +62,29 @@
     border-radius: 40px;
     cursor: pointer;
     position: absolute;
-    transition: 0.15s ease;
+    transition: 0.2s ease;
   }
 
   #yes {
     background: #ff4d6d;
     color: white;
     left: 40px;
-    top: 40px;
+    top: 60px;
   }
 
   #no {
     background: white;
     color: #ff4d6d;
     right: 40px;
-    top: 40px;
+    top: 60px;
   }
 
-  /* TIM BAY */
+  /* TIM BAY NỀN */
   .heart {
     position: fixed;
-    bottom: -20px;
+    bottom: -30px;
     font-size: 26px;
-    animation: floatUp 6s linear infinite;
+    animation: floatUp linear forwards;
     opacity: 0.9;
   }
 
@@ -78,7 +94,7 @@
       opacity: 1;
     }
     to {
-      transform: translateY(-110vh) scale(1.6);
+      transform: translateY(-120vh) scale(1.8);
       opacity: 0;
     }
   }
@@ -87,13 +103,14 @@
   .success {
     text-align: center;
     color: white;
-    font-size: 4.2rem;
+    font-size: 4.5rem;
     animation: pop 0.8s ease;
+    z-index: 3;
   }
 
   @keyframes pop {
     from {
-      transform: scale(0.5);
+      transform: scale(0.4);
       opacity: 0;
     }
     to {
@@ -101,19 +118,30 @@
       opacity: 1;
     }
   }
+
+  /* PHÁO HOA */
+  .firework {
+    position: fixed;
+    font-size: 30px;
+    animation: boom 1.2s ease-out forwards;
+  }
+
+  @keyframes boom {
+    from { transform: scale(0.2); opacity: 1; }
+    to { transform: scale(2); opacity: 0; }
+  }
 </style>
 </head>
 
 <body>
 
-<audio id="loveMusic" preload="auto">
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9cddc8b7d5.mp3" type="audio/mpeg">
-</audio>
-
 <div class="container" id="page1">
   <h1>Hey Na 💖<br>You will be my Valentine?</h1>
 
-  <div class="note">Choosing “No” is not an option! 😜💘</div>
+  <div class="note">
+    Choosing “No” is not an option! 😜💘<br>
+    <span id="counter"></span>
+  </div>
 
   <div class="buttons">
     <button id="yes">YES 💘</button>
@@ -124,46 +152,93 @@
 <script>
   const noBtn = document.getElementById("no");
   const yesBtn = document.getElementById("yes");
-  const music = document.getElementById("loveMusic");
+  const counterText = document.getElementById("counter");
 
-  /* NO: nhích ra 1 chút, KHÔNG biến mất */
+  let noCount = 0;
+
+  const noTexts = [
+    "NO 🙈",
+    "Are you sure? 😏",
+    "Think again 💕",
+    "Really? 🥺",
+    "Still no? 😆",
+    "Nice try 😜"
+  ];
+
+  /* NO né + YES to dần */
   noBtn.addEventListener("click", () => {
-    const currentLeft = noBtn.offsetLeft;
-    const currentTop = noBtn.offsetTop;
+    noCount++;
 
-    const moveX = Math.random() * 80 - 40;
-    const moveY = Math.random() * 40 - 20;
+    const moveX = (Math.random() * 120 + 40) * (Math.random() > 0.5 ? 1 : -1);
+    const moveY = (Math.random() * 60 + 20) * (Math.random() > 0.5 ? 1 : -1);
 
-    noBtn.style.left = currentLeft + moveX + "px";
-    noBtn.style.top = currentTop + moveY + "px";
+    const left = Math.max(0, Math.min(300, noBtn.offsetLeft + moveX));
+    const top = Math.max(0, Math.min(120, noBtn.offsetTop + moveY));
+
+    noBtn.style.left = left + "px";
+    noBtn.style.top = top + "px";
     noBtn.style.right = "auto";
+
+    noBtn.textContent = noTexts[Math.min(noCount, noTexts.length - 1)];
+    yesBtn.style.transform = `scale(${1 + noCount * 0.12})`;
+
+    counterText.textContent = `You tried ${noCount} time${noCount > 1 ? "s" : ""} 😆`;
   });
 
-  /* YES */
+  /* YES → PAGE 2 */
   yesBtn.addEventListener("click", () => {
-    music.play();
-
     document.getElementById("page1").innerHTML = `
       <div class="success">
-        💕🎉 Yay! 🎉💕<br>
-        I knew it 🥰💖<br><br>
-        😍💘💝💐🥳
+        🎉💖 Yay! 💖🎉<br>
+        I knew it 🥰💘
       </div>
     `;
+
+    startFireworks();
+    startLoveRain();
   });
 
   /* TIM BAY */
   function createHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
-    heart.innerText = "💖";
+    heart.innerText = ["💖","💘","💕","💝"][Math.floor(Math.random()*4)];
     heart.style.left = Math.random() * 100 + "vw";
     heart.style.animationDuration = 4 + Math.random() * 4 + "s";
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 8000);
   }
-
   setInterval(createHeart, 300);
+
+  /* PHÁO HOA */
+  function startFireworks() {
+    let count = 0;
+    const fw = setInterval(() => {
+      const f = document.createElement("div");
+      f.className = "firework";
+      f.innerText = "🎆";
+      f.style.left = Math.random() * 100 + "vw";
+      f.style.top = Math.random() * 100 + "vh";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 1200);
+      if (++count > 15) clearInterval(fw);
+    }, 200);
+  }
+
+  /* MƯA EMOJI */
+  function startLoveRain() {
+    let count = 0;
+    const rain = setInterval(() => {
+      const e = document.createElement("div");
+      e.className = "heart";
+      e.innerText = ["😍","🥰","💘","💝","💐"][Math.floor(Math.random()*5)];
+      e.style.left = Math.random() * 100 + "vw";
+      e.style.animationDuration = "5s";
+      document.body.appendChild(e);
+      setTimeout(() => e.remove(), 6000);
+      if (++count > 20) clearInterval(rain);
+    }, 250);
+  }
 </script>
 
 </body>
